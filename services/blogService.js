@@ -164,25 +164,149 @@ TARGET_KEY_PHRASE: [primary keyword phrase]`;
 }
 
 async function generateImagePrompts(articleContent, title) {
-  const systemPrompt = `You are an expert at creating detailed photography prompts for AI image generation. Create specific, detailed prompts for:
+  const systemPrompt = `You are an expert at creating detailed, structured JSON photography prompts for AI image generation. You will create professional church/ministry focused images using this exact JSON structure.
 
-1. One cover image (16:9 aspect ratio) for the blog post  
-2. Exactly 4 section images (1:1 aspect ratio) for each of the 4 main sections
+Here is an example of the level of detail and structure required (adapt this style but change content for ministry/church context):
 
-The prompts should be:
-- Photographic style only (no text, illustrations, or graphics)
-- Professional and relevant to church/ministry context
-- Detailed enough for AI image generation
-- Clean, modern aesthetic suitable for a blog
-
-Format your response as JSON with this structure:
 {
-  "cover": "detailed prompt for cover image",
+  "meta": {
+    "styleName": "Playful Forest Glow",
+    "aspectRatio": "3:4",
+    "promptPrefix": "IMG_2025.JPG"
+  },
+  "camera": {
+    "model": "35mm film camera (e.g., Canon AE-1, Olympus OM-1)",
+    "focalLength": "standard prime lens (e.g., 50mm)",
+    "angle": "slightly low-angle shot, looking up at the subject",
+    "type": "candid portrait photography"
+  },
+  "subject": {
+    "primary": "a young East Asian woman",
+    "emotion": "a playful, joyful, and slightly mischievous expression",
+    "pose": "standing casually amid trees playing with t-shirt, body angled with one hip pushed out, head tilted slightly, with a light bounce as if mid-laugh",
+    "gaze": "looking towards the camera with a teasing smile"
+  },
+  "character": {
+    "appearance": "long, dark, messy and voluminous hair tousled by a gentle breeze, natural 'no-makeup' look with a radiant, sun-kissed glow",
+    "wardrobe": "an oversized t-shirt in a warm cream hue and simple light-colored underwear",
+    "accessories": "none"
+  },
+  "composition": {
+    "theory": "natural framing using tree branches and foliage, rule of thirds, candid moment capture",
+    "visualHierarchy": "The subject is the primary focus, with the woodland background providing environmental context and depth."
+  },
+  "setting": {
+    "environment": "a serene forest clearing on a sunny day",
+    "architecture": "ancient trees and dappled foliage visible in the hazy background",
+    "furniture": "none, with natural logs or vines in the foreground for organic framing"
+  },
+  "lighting": {
+    "source": "direct, natural afternoon sunlight filtering through leaves",
+    "direction": "high side lighting with dappled patterns",
+    "quality": "harsh and high-contrast in spots, creating bright, almost blown-out highlights on the skin and clothing, with deep, defined shadows interspersed with soft speckles. The overall light has a warm, golden quality infused with green undertones."
+  },
+  "style": {
+    "artDirection": "lo-fi, vintage, slice-of-life, reminiscent of Japanese or Korean indie film aesthetics with a touch of ethereal nature",
+    "mood": "nostalgic, intimate, playful, dreamy, sun-drenched, and vibrantly alive"
+  },
+  "rendering": {
+    "engine": "emulation of vintage 35mm color film",
+    "fidelitySpec": "visible film grain, soft focus (not digitally sharp), halation or bloom in the highlights, and subtle lens flare from sunlight",
+    "postProcessing": "color grading to mimic a vintage film stock, featuring slightly washed-out colors, a warm terracotta or golden cast from the clothing and sunlight, and cool tones in the shadows"
+  },
+  "colorPlate": {
+    "primaryColors": [
+      {"name": "Terracotta (t-shirt)", "hex": "#C65D40", "percentage": "30%"},
+      {"name": "Warm Skin Tones", "hex": "#E0BBAA", "percentage": "25%"},
+      {"name": "Forest Green", "hex": "#228B22", "percentage": "20%"}
+    ],
+    "accentColors": [
+      {"name": "Dark Brown/Black (hair)", "hex": "#3D2B1F", "percentage": "15%"},
+      {"name": "Shadow Blue/Gray", "hex": "#778899", "percentage": "10%"}
+    ]
+  }
+}
+
+Now create professional ministry/church versions with this same level of detail. Your template structure should be:
+
+{
+  "meta": {
+    "styleName": "Professional Ministry Photography",
+    "aspectRatio": "16:9" or "1:1",
+    "promptPrefix": "MINISTRY_2025.JPG"
+  },
+  "camera": {
+    "model": "professional camera (e.g., Canon EOS R5, Nikon Z7)",
+    "focalLength": "appropriate lens (e.g., 85mm portrait, 24-70mm standard)",
+    "angle": "camera angle description",
+    "type": "photography style (e.g., documentary, portrait, environmental)"
+  },
+  "subject": {
+    "primary": "main subject description",
+    "emotion": "facial expression and mood",
+    "pose": "body position and stance",
+    "gaze": "eye contact and direction"
+  },
+  "character": {
+    "appearance": "professional, modest appearance suitable for ministry context",
+    "wardrobe": "professional church attire (suits, modest dresses, etc.)",
+    "accessories": "minimal, professional accessories"
+  },
+  "composition": {
+    "theory": "compositional techniques used",
+    "visualHierarchy": "how elements are arranged"
+  },
+  "setting": {
+    "environment": "church, office, conference room, or ministry setting",
+    "architecture": "building elements visible",
+    "furniture": "relevant furniture or props"
+  },
+  "lighting": {
+    "source": "natural window light, soft studio lighting, etc.",
+    "direction": "lighting direction",
+    "quality": "soft, professional lighting description"
+  },
+  "style": {
+    "artDirection": "professional, clean, modern church photography",
+    "mood": "inspiring, professional, welcoming, trustworthy"
+  },
+  "rendering": {
+    "engine": "professional photography simulation",
+    "fidelitySpec": "sharp, high-quality, professional grade",
+    "postProcessing": "clean, professional color grading"
+  },
+  "colorPlate": {
+    "primaryColors": [
+      {"name": "Professional Navy", "hex": "#2C3E50", "percentage": "30%"},
+      {"name": "Warm White", "hex": "#F8F9FA", "percentage": "25%"},
+      {"name": "Wood Tones", "hex": "#8B6914", "percentage": "20%"}
+    ],
+    "accentColors": [
+      {"name": "Professional Gray", "hex": "#6C757D", "percentage": "15%"},
+      {"name": "Soft Blue", "hex": "#4A90E2", "percentage": "10%"}
+    ]
+  }
+}
+
+Create 5 different JSON prompts:
+1. One cover image (16:9 aspect ratio) 
+2. Four section images (1:1 aspect ratio)
+
+All images should be professional, clean, and appropriate for pastors and church leaders. Focus on:
+- Professional office/church settings
+- People in ministry contexts (pastors, church staff, congregants)
+- Modern church environments
+- Professional presentation materials
+- Clean, inspiring atmospheres
+
+Return as JSON with this structure:
+{
+  "cover": { ...full JSON structure for cover image... },
   "sections": [
-    "prompt for section 1",
-    "prompt for section 2", 
-    "prompt for section 3",
-    "prompt for section 4"
+    { ...full JSON structure for section 1... },
+    { ...full JSON structure for section 2... },
+    { ...full JSON structure for section 3... },
+    { ...full JSON structure for section 4... }
   ]
 }`;
 
@@ -190,7 +314,7 @@ Format your response as JSON with this structure:
     model: 'google/gemini-2.5-flash',
     messages: [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: `Create image prompts for this blog article:\n\nTitle: ${title}\n\nContent:\n${articleContent}` }
+      { role: 'user', content: `Create structured JSON image prompts for this blog article:\n\nTitle: ${title}\n\nContent:\n${articleContent}` }
     ],
     temperature: 0.7,
     response_format: { type: 'json_object' }
@@ -199,7 +323,16 @@ Format your response as JSON with this structure:
   return JSON.parse(response.data.choices[0].message.content);
 }
 
-async function generateImage(prompt, aspectRatio) {
+async function generateImage(promptData, aspectRatio) {
+  // If promptData is a string (old format), use it directly
+  let prompt;
+  if (typeof promptData === 'string') {
+    prompt = promptData;
+  } else {
+    // If it's a JSON object, use it directly as the prompt
+    prompt = promptData;
+  }
+
   const output = await replicate.run(
     "google/imagen-4-fast",
     {
