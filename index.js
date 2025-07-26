@@ -11,15 +11,24 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: [
+      process.env.CLIENT_URL || "http://localhost:3000",
+      "https://saltbloggen.netlify.app",
+      "http://localhost:3000"
+    ],
     methods: ["GET", "POST"]
   },
   transports: ['websocket', 'polling']
 });
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    process.env.CLIENT_URL || "http://localhost:3000", 
+    "https://saltbloggen.netlify.app",
+    "http://localhost:3000"
+  ]
+}));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../client/build')));
 
 const blogRoutes = require('./routes/blog');
 app.use('/api/blog', (req, res, next) => {
@@ -35,8 +44,8 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
+app.get('/', (req, res) => {
+  res.json({ message: 'Salt Creative Blog Generator API', status: 'running' });
 });
 
 const PORT = process.env.PORT || 5001;
