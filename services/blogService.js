@@ -308,7 +308,9 @@ Return as JSON with this structure:
     { ...full JSON structure for section 3... },
     { ...full JSON structure for section 4... }
   ]
-}`;
+}
+
+CRITICAL: Return ONLY valid JSON with this exact structure (no additional text, no explanations). Ensure all JSON is valid with properly escaped quotes and no trailing commas.`;
 
   const response = await openRouterAPI.post('/chat/completions', {
     model: 'google/gemini-2.5-flash',
@@ -316,21 +318,34 @@ Return as JSON with this structure:
       { role: 'system', content: systemPrompt },
       { role: 'user', content: `Create structured JSON image prompts for this blog article:\n\nTitle: ${title}\n\nContent:\n${articleContent}` }
     ],
-    temperature: 0.7,
+    temperature: 0.5,
     response_format: { type: 'json_object' }
   });
 
-  return JSON.parse(response.data.choices[0].message.content);
+  const rawContent = response.data.choices[0].message.content;
+  console.log('Raw AI response for image prompts:', rawContent);
+  
+  try {
+    const parsedContent = JSON.parse(rawContent);
+    console.log('Successfully parsed JSON image prompts:', JSON.stringify(parsedContent, null, 2));
+    return parsedContent;
+  } catch (parseError) {
+    console.error('JSON parsing failed at position:', parseError.message);
+    console.error('Raw content that failed to parse:', rawContent);
+    throw new Error(`Failed to parse AI-generated JSON image prompts: ${parseError.message}`);
+  }
 }
 
 async function generateImage(promptData, aspectRatio) {
-  // If promptData is a string (old format), use it directly
+  // Convert prompt to string format for Imagen
   let prompt;
   if (typeof promptData === 'string') {
     prompt = promptData;
+    console.log(`Using string prompt for Imagen: ${prompt}`);
   } else {
-    // If it's a JSON object, use it directly as the prompt
-    prompt = promptData;
+    // Convert JSON object to JSON-formatted string for Imagen
+    prompt = JSON.stringify(promptData, null, 2);
+    console.log(`Converted JSON object to JSON string for Imagen:`, prompt);
   }
 
   const output = await replicate.run(
@@ -345,6 +360,7 @@ async function generateImage(promptData, aspectRatio) {
     }
   );
 
+  console.log(`Imagen generated image for ${aspectRatio}:`, output);
   return output;
 }
 
